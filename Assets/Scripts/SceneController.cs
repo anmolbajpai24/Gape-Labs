@@ -7,7 +7,7 @@ using System.IO;
 
 public class SceneController : MonoBehaviourPunCallbacks
 {
-    private CustomPrefabPool prefabPool;
+  
 
     public string targetSceneName;
     //public GameObject objectToInstantiate;
