@@ -7,6 +7,8 @@ using System.IO;
 
 public class SceneController : MonoBehaviourPunCallbacks
 {
+    private CustomPrefabPool prefabPool;
+
     public string targetSceneName;
     //public GameObject objectToInstantiate;
     public Vector3 instantiatePosition;
@@ -16,6 +18,7 @@ public class SceneController : MonoBehaviourPunCallbacks
         base.OnEnable();
         DontDestroyOnLoad(this.gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
+
     }
 
     public override void OnDisable()
@@ -31,7 +34,7 @@ public class SceneController : MonoBehaviourPunCallbacks
             PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity);
             Debug.Log("YOYO");
 
-           // Instantiate(objectToInstantiate, instantiatePosition, Quaternion.identity);
+            // Instantiate(objectToInstantiate, instantiatePosition, Quaternion.identity);
         }
     }
 }

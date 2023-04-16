@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -7,15 +8,19 @@ public class LoadAssetBundles : MonoBehaviour
     // Replace with your cloud storage Asset Bundle URL
     public string assetBundleURL;
 
-    // Name of the asset you want to load from the Asset Bundle
-    public string assetName;
+    // The loaded prefabs
+    public GameObject playerManagerPrefab;
+    public GameObject bulletPrefab;
+    public GameObject playerPrefab;
+
+    public event Action OnAssetBundleLoaded;
 
     void Start()
     {
-        StartCoroutine(DownloadAndLoadAssetBundle(assetBundleURL, assetName));
+        StartCoroutine(DownloadAndLoadAssetBundle(assetBundleURL));
     }
 
-    IEnumerator DownloadAndLoadAssetBundle(string url, string assetNameToLoad)
+    IEnumerator DownloadAndLoadAssetBundle(string url)
     {
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
@@ -25,8 +30,24 @@ public class LoadAssetBundles : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(request);
-                GameObject loadedAsset = bundle.LoadAsset<GameObject>(assetNameToLoad);
-                Instantiate(loadedAsset);
+
+                playerManagerPrefab = bundle.LoadAsset<GameObject>("PlayerManager");
+                bulletPrefab = bundle.LoadAsset<GameObject>("Bullet");
+                playerPrefab = bundle.LoadAsset<GameObject>("Player");
+
+                // Add the loaded prefabs to the custom prefab pool
+                CustomPrefabPool prefabPool = FindObjectOfType<CustomPrefabPool>();
+                if (prefabPool != null)
+                {
+                    prefabPool.AddPrefab(playerManagerPrefab);
+                    prefabPool.AddPrefab(bulletPrefab);
+                    prefabPool.AddPrefab(playerPrefab);
+                }
+                else
+                {
+                    Debug.LogError("CustomPrefabPool not found in the scene.");
+                }
+
                 bundle.Unload(false);
             }
             else

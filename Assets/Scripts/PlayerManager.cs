@@ -8,6 +8,7 @@ using System.IO;
 public class PlayerManager : MonoBehaviour
 {
     PhotonView photonView;
+    public LoadAssetBundles AssetBundleLoader;
 
     private void Awake()
     {
@@ -32,6 +33,11 @@ public class PlayerManager : MonoBehaviour
     void CreateController()
     {
         Debug.Log("Controller");
+        CustomPrefabPool prefabPool = FindObjectOfType<CustomPrefabPool>();
+
+        PhotonNetwork.Instantiate(AssetBundleLoader.playerPrefab.name, transform.position, transform.rotation);
+
+        //prefabPool.Instantiate(AssetBundleLoader.playerPrefab.name, transform.position, transform.rotation);
         PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerController"), Vector3.zero, Quaternion.identity);
     }
 }
